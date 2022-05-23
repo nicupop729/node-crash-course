@@ -1,12 +1,22 @@
 const http = require("http");
 const fs = require("fs");
+const _ = require("lodash");
 
 const server = http.createServer((req, res) => {
-  console.log(req.url, req.method);
+  // lodash
+  const num = _.random(0, 20);
+  console.log(num);
 
-  //set headers content type
+  const greet = _.once(() => {
+    console.log("hello");
+  });
+  greet();
+  greet();
+
+  // set header content type
   res.setHeader("Content-Type", "text/html");
 
+  // routing
   let path = "./views/";
   switch (req.url) {
     case "/":
@@ -17,7 +27,7 @@ const server = http.createServer((req, res) => {
       path += "about.html";
       res.statusCode = 200;
       break;
-    case "/about-me":       
+    case "/about-us":
       res.statusCode = 301;
       res.setHeader("Location", "/about");
       res.end();
@@ -25,22 +35,17 @@ const server = http.createServer((req, res) => {
     default:
       path += "404.html";
       res.statusCode = 404;
-      break;
-  }  
+  }
 
-  // send an html file
+  // send html
   fs.readFile(path, (err, data) => {
     if (err) {
       console.log(err);
       res.end();
-    } else {
-      // res.write(data);
-      
-      res.end(data);
     }
-  }
-  );
- 
+    //res.write(data);
+    res.end(data);
+  });
 });
 
 // localhost is the default value for 2nd argument
